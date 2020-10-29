@@ -88,13 +88,6 @@ class Home extends Component {
   }
 
   render() {
-    // console.log(this.props.match.params.galleryId);
-    // console.log(gallery);
-    // console.log(gallery.filter(project => project.id == this.props.match.params.galleryId));
-    if (this.state.projectToLoad) {
-      console.log(this.state.projectToLoad.xml)
-    }
-    console.log(this.props);
     return (
       <div>
         <div style={{ float: 'right', height: '40px', marginBottom: '20px' }}><WorkspaceFunc /></div>
@@ -112,7 +105,9 @@ class Home extends Component {
             </Tooltip>
             <TrashcanButtons />
             {this.state.projectToLoad ?
-              < BlocklyWindow blocklyCSS={{ height: '80vH' }} initialXml={this.state.projectToLoad.xml} /> : < BlocklyWindow blocklyCSS={{ height: '80vH' }} />
+              < BlocklyWindow
+                blocklyCSS={{ height: '80vH' }}
+                initialXml={this.state.projectToLoad.xml} /> : < BlocklyWindow blockDisabled blocklyCSS={{ height: '80vH' }} />
             }
 
           </Grid>

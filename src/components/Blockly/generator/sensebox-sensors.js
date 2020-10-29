@@ -263,36 +263,81 @@ Blockly.Arduino.sensebox_scd30 = function () {
   Blockly.Arduino.libraries_['scd30_library'] = '#include "SparkFun_SCD30_Arduino_Library.h"'
   Blockly.Arduino.libraries_['library_senseBoxMCU'] = '#include "SenseBoxMCU.h"';
   Blockly.Arduino.definitions_['SCD30'] = 'SCD30 airSensor;';
-  Blockly.Arduino.variables_['scd30_temp'] = 'float scd30_temp;';
-  Blockly.Arduino.variables_['scd30_humi'] = 'float scd30_humi;';
-  Blockly.Arduino.variables_['scd30_co2'] = 'float scd30_co2;';
   Blockly.Arduino.setupCode_['init_scd30'] = ` Wire.begin();
   if (airSensor.begin() == false)
   {
-    Serial.println("Air sensor not detected. Please check wiring. Freezing...");
     while (1)
       ;
   }`;
-  Blockly.Arduino.loopCodeOnce_['scd30_getData'] = `if (airSensor.dataAvailable())
-  {
-   scd30_co2 = airSensor.getCO2();
-   scd30_temp = airSensor.getTemperature();
-   scd30_humi = airSensor.getHumidity();
-  }`
   var code = '';
   switch (dropdown) {
     case 'temperature':
-      code = 'scd30_temp';
+      code = 'airSensor.getTemperature()';
       break;
     case 'humidity':
-      code = 'scd30_humi';
+      code = 'airSensor.getHumidity()';
       break;
     case 'CO2':
-      code = 'scd30_co2';
+      code = 'airSensor.getCO2()';
       break;
     default:
       code = ''
   }
   return [code, Blockly.Arduino.ORDER_ATOMIC];
 
-}
+};
+
+
+/**
+ * GPS
+ * 
+ */
+
+Blockly.Arduino.sensebox_gps_getValues = function () {
+  Blockly.Arduino.libraries_['library_senseBoxMCU'] = '#include "SenseBoxMCU.h"';
+  var dropdown_name = this.getFieldValue("Values");
+  Blockly.Arduino.definitions_['define_gps'] = 'GPS gps;';
+  Blockly.Arduino.setupCode_['sensebox_gps_begin'] = 'gps.begin();';
+  Blockly.Arduino.loopCodeOnce_['gps.getGPS'] = 'gps.getGPS();'
+  var code = '';
+  switch (dropdown_name) {
+    case 'latitude':
+      Blockly.Arduino.definitions_['GpsLatitude'] = 'float latitude;';
+      Blockly.Arduino.loopCodeOnce_['gps.getLatitude'] = 'latitude = gps.getLatitude();';
+      code = 'latitude';
+      break;
+    case 'longitude':
+      Blockly.Arduino.definitions_['GpsLongitude'] = 'float longitude;';
+      Blockly.Arduino.loopCodeOnce_['gps.getLongitude'] = 'longitude = gps.getLongitude();';
+      code = 'longitude';
+      break;
+    case 'height':
+      Blockly.Arduino.definitions_['GpsAltitude'] = 'float height;';
+      Blockly.Arduino.loopCodeOnce_['gps.getAltitude'] = 'height = gps.getAltitude();';
+      code = 'height';
+      break;
+    case 'tsBuffer':
+      Blockly.Arduino.definitions_['GpsTimeStamp'] = 'char* tsBuffer;';
+      Blockly.Arduino.loopCodeOnce_['gps.getTimeStamp'] = 'tsBuffer = gps.getTimeStamp();';
+      code = 'tsBuffer';
+      break;
+    case 'Speed':
+      Blockly.Arduino.definitions_['GpsSpeed'] = 'float speed;';
+      Blockly.Arduino.loopCodeOnce_['gps.getSpeed'] = 'speed = gps.getSpeed();';
+      code = 'speed';
+      break;
+    case 'Time':
+      Blockly.Arduino.definitions_['GpsTime'] = 'float time;';
+      Blockly.Arduino.loopCodeOnce_['gps.getTime'] = ' time = gps.getTime();';
+      code = 'time';
+      break;
+    case 'Date':
+      Blockly.Arduino.definitions_['GpsDate'] = 'float date;';
+      Blockly.Arduino.loopCodeOnce_['gps.getDate'] = 'date = gps.getDate();';
+      code = 'date';
+      break;
+    default:
+      code = '';
+  }
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};

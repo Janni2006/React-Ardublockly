@@ -46,6 +46,7 @@ class Toolbox extends React.Component {
                     <Block type="sensebox_sensor_pressure" />
                     <Block type="sensebox_sensor_bme680_bsec" />
                     <Block type="sensebox_scd30" />
+                    <Block type="sensebox_gps_getValues" />
                     <Block type="sensebox_sensor_ultrasonic_ranger" />
                     <Block type="sensebox_sensor_sound" />
                     <Block type="sensebox_button" />
@@ -403,6 +404,7 @@ class Toolbox extends React.Component {
                         </Value>
                     </Block>
                 </Category>
+                {/* <Category id="catFunctions" name="Functions" custom="PROCEDURE" colour="290"></Category> */}
                 {/* this block is the initial block of the workspace; not necessary
                     to display, because it can only be used once anyway
                 <Category name="Procedures" colour={getColour().procedures}>

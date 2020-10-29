@@ -321,3 +321,31 @@ Blockly.Blocks['sensebox_scd30'] = {
     this.setTooltip(Blockly.Msg.senseBox_bme_tip);
   }
 };
+
+/**
+ * GPS
+ * 
+ */
+
+Blockly.Blocks['sensebox_gps_getValues'] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.senseBox_gps_getValues);
+    this.appendDummyInput()
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField(Blockly.Msg.senseBox_value)
+      .appendField(new Blockly.FieldDropdown([[Blockly.Msg.senseBox_gps_lat, "latitude"], [Blockly.Msg.senseBox_gps_lng, "longitude"], [Blockly.Msg.senseBox_gps_alt, "height"], [Blockly.Msg.senseBox_gps_timeStamp, "tsBuffer"], [Blockly.Msg.senseBox_gps_speed, "Speed"], [Blockly.Msg.senseBox_gps_date, "Date"], [Blockly.Msg.senseBox_gps_time, "Time"]]), "Values");
+    this.setOutput(true, Types.NUMBER.typeName);
+    this.setColour(getColour().sensebox);
+    this.setTooltip(Blockly.Msg.senseBox_gps_getValues_tip);
+    this.setHelpUrl('https://edu.books.sensebox.de/de/');
+  },
+  getBlockType: function () {
+    var input = this.getFieldValue('Values');
+    if (input === 'tsBuffer') {
+      return Types.TEXT.typeName;
+    } else {
+      return Types.DECIMAL.typeName;
+    }
+  },
+};

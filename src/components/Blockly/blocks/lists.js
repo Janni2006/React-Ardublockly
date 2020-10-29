@@ -1,5 +1,4 @@
 import Blockly, { FieldDropdown } from 'blockly/core';
-import { selectedBoard } from '../helpers/board'
 import * as Types from '../helpers/types'
 import { getColour } from '../helpers/colour';
 
