@@ -322,19 +322,47 @@ Blockly.Arduino.sensebox_gps = function () {
   var code = '';
   switch (dropdown) {
     case 'latitude':
-      code = 'myGPS.getLatitude()';
+      Blockly.Arduino.functionNames_['convertToDecimal'] = `float convertToDecimal(int32_t value, int exponent){
+        float decimal = (value/pow(10, exponent));
+        return decimal;
+      }`
+      code = 'convertToDecimal(myGPS.getLatitude(), 7)';
       break;
     case 'longitude':
-      code = 'myGPS.getLongitude()';
+      Blockly.Arduino.functionNames_['convertToDecimal'] = `float convertToDecimal(int32_t value, int exponent){
+        float decimal = (value/pow(10, exponent));
+        return decimal;
+      }`
+      code = 'convertToDecimal(myGPS.getLongitude(), 7)';
       break;
     case 'altitude':
-      code = 'myGPS.getAltitudeMSL()';
+      Blockly.Arduino.functionNames_['convertToDecimal'] = `float convertToDecimal(int32_t value, int exponent){
+        float decimal = (value/pow(10, exponent));
+        return decimal;
+      }`
+      code = 'convertToDecimal(myGPS.getAltitudeMSL(), 3)';
       break;
     case 'pDOP':
       code = 'myGPS.getPDOP()';
       break;
     case 'fixType':
       code = 'myGPS.getFixType()';
+      break;
+    case 'TimeStamp':
+      Blockly.Arduino.functionNames_['gpsTimeStamp'] = `String getTimeStamp() {
+      
+      unsigned int year = myGPS.getYear();
+      unsigned int month = myGPS.getMonth();
+      unsigned int day = myGPS.getDay();
+      unsigned int hour = myGPS.getHour();
+      unsigned int minute = myGPS.getMinute();
+      unsigned int second = myGPS.getSecond();
+
+      char timestamp[20];
+      sprintf(timestamp, "%u-%02u-%02uT%02u:%02u:%02uZ", year, month, day, hour, minute, second);
+      return timestamp;
+      }`;
+      code = 'getTimeStamp()';
       break;
     default:
       code = ''

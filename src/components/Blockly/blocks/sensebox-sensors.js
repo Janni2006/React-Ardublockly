@@ -331,15 +331,25 @@ Blockly.Blocks['sensebox_scd30'] = {
 
 Blockly.Blocks['sensebox_gps'] = {
   init: function () {
-    var dropdownOptions = [[Blockly.Msg.senseBox_gps_lat, "latitude"], [Blockly.Msg.senseBox_gps_lng, "longitude"], [Blockly.Msg.senseBox_gps_alt, "altitude"], ["pDOP", "pDOP"], ["Fix Type", "fixType"]];
+    var dropdownOptions = [[Blockly.Msg.senseBox_gps_lat, "latitude"], [Blockly.Msg.senseBox_gps_lng, "longitude"], [Blockly.Msg.senseBox_gps_alt, "altitude"], ["pDOP", "pDOP"], ["Fix Type", "fixType"], [Blockly.Msg.senseBox_gps_timeStamp, 'TimeStamp']];
     this.appendDummyInput()
       .appendField("GPS Modul");
     this.appendDummyInput()
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField(Blockly.Msg.senseBox_value)
       .appendField(new Blockly.FieldDropdown(dropdownOptions), "dropdown")
-    this.setOutput(true, Types.NUMBER.typeName);
+    this.setOutput(true, Types.DECIMAL.typeName);
     this.setColour(getColour().sensebox);
     this.setTooltip(Blockly.Msg.senseBox_bme_tip);
-  }
+  },
+  onchange: function (e) {
+    var input = this.getFieldValue('dropdown');
+    if (input === 'latitude' || input === 'longitude' || input === 'altitude' || input === 'pDOP') {
+      this.setOutput(true, Types.DECIMAL.typeName);
+    }
+    else if (input === 'TimeStamp')
+      this.setOutput(true, Types.CHARACTER.typeName);
+    else if (input === 'fixType')
+      this.setOutput(true, Types.NUMBER.typeName);
+  },
 };
