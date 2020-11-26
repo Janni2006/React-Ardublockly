@@ -20,7 +20,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Tour from 'reactour'
 import * as steps from './Tour';
 
-import { faBars, faChevronLeft, faBuilding, faIdCard, faEnvelope, faCog, faChalkboardTeacher, faFolderPlus, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faChevronLeft, faCog, faChalkboardTeacher, faTools, faLightbulb } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const styles = (theme) => ({
