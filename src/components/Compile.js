@@ -125,7 +125,12 @@ class Compile extends Component {
           </Button>
         }
         <Backdrop className={this.props.classes.backdrop} open={this.state.progress}>
-          <CircularProgress color="inherit" />
+          <div className='overlay'>
+            <h2>{Blockly.Msg.compile_overlay_head}</h2>
+            <p>{Blockly.Msg.compile_overlay_text}</p>
+            <CircularProgress color="inherit" />
+          </div>
+
         </Backdrop>
         <Dialog
           open={this.state.open}
@@ -142,7 +147,7 @@ class Compile extends Component {
             </div>
             : null}
         </Dialog>
-      </div>
+      </div >
     );
   };
 }

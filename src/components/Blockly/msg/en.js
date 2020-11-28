@@ -856,4 +856,10 @@ Blockly.Msg.button_create_variableCreate = "Create Variable";
 Blockly.Msg.filename = "Filename";
 Blockly.Msg.projectname = "Projectname";
 
+
+Blockly.Msg.compile_overlay_head = "Your program is now compiled and downloaded";
+Blockly.Msg.compile_overlay_text = "Then copy it to your senseBox MCU";
+
+
+
 export const En = Blockly.Msg;
