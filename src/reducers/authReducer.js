@@ -9,8 +9,8 @@ const initialState = {
   user: null
 };
 
-export default function(state = initialState, action){
-  switch(action.type){
+export default function (state = initialState, action) {
+  switch (action.type) {
     case USER_LOADING:
       return {
         ...state,

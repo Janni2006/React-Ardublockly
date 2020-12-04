@@ -18,7 +18,7 @@ export const loadUser = () => (dispatch) => {
       });
     },
     error: err => {
-      if(err.response){
+      if (err.response) {
         dispatch(returnErrors(err.response.data.message, err.response.status));
       }
       dispatch({
@@ -37,7 +37,7 @@ export const loadUser = () => (dispatch) => {
 
 
 var logoutTimerId;
-const timeToLogout = 14.9*60*1000; // nearly 15 minutes corresponding to the API
+const timeToLogout = 14.9 * 60 * 1000; // nearly 15 minutes corresponding to the API
 
 // Login user
 export const login = ({ email, password }) => (dispatch) => {
@@ -50,27 +50,45 @@ export const login = ({ email, password }) => (dispatch) => {
   // Request Body
   const body = JSON.stringify({ email, password });
   axios.post(`${process.env.REACT_APP_BLOCKLY_API}/user`, body, config)
-  .then(res => {
-    // Logout automatically if refreshToken "expired"
-    const logoutTimer = () => setTimeout(
-      () => dispatch(logout()),
-      timeToLogout
-    );
-    logoutTimerId = logoutTimer();
-    dispatch({
-      type: LOGIN_SUCCESS,
-      payload: res.data
+    .then(res => {
+      // Logout automatically if refreshToken "expired"
+      const logoutTimer = () => setTimeout(
+        () => dispatch(logout()),
+        timeToLogout
+      );
+      logoutTimerId = logoutTimer();
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: res.data
+      });
+      const token = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + res.data.token + ''
+        }
+      }
+      axios.get(`https://api.opensensemap.org/users/me/boxes`, token)
+        .then(res => {
+          // Logout automatically if refreshToken "expired"
+          const logoutTimer = () => setTimeout(
+            () => dispatch(logout()),
+            timeToLogout
+          );
+          logoutTimerId = logoutTimer();
+          console.log(res.data.data.boxes);
+          let allBoxes = res.data.data.boxes;
+          sessionStorage.setItem('boxes', JSON.stringify(allBoxes))
+        });
+      dispatch(returnSuccess(res.data.message, res.status, 'LOGIN_SUCCESS'));
+    })
+    .catch(err => {
+      console.log('hier');
+      console.log(err);
+      dispatch(returnErrors(err.response.data.message, err.response.status, 'LOGIN_FAIL'));
+      dispatch({
+        type: LOGIN_FAIL
+      });
     });
-    dispatch(returnSuccess(res.data.message, res.status, 'LOGIN_SUCCESS'));
-  })
-  .catch(err => {
-    console.log('hier');
-    console.log(err);
-    dispatch(returnErrors(err.response.data.message, err.response.status, 'LOGIN_FAIL'));
-    dispatch({
-      type: LOGIN_FAIL
-    });
-  });
 };
 
 
@@ -93,14 +111,15 @@ export const logout = () => (dispatch) => {
     }
   };
   axios.post('https://api.opensensemap.org/users/sign-out', {}, config)
-  .then(res => {
-    res.config.success(res);
-  })
-  .catch(err => {
-    if(err.response.status !== 401){
-      err.config.error(err);
-    }
-  });
+    .then(res => {
+      res.config.success(res);
+      sessionStorage.clear('boxes')
+    })
+    .catch(err => {
+      if (err.response.status !== 401) {
+        err.config.error(err);
+      }
+    });
 };
 
 
@@ -111,13 +130,13 @@ export const authInterceptor = () => (dispatch, getState) => {
       config.headers['Content-Type'] = 'application/json';
       const token = getState().auth.token;
       if (token) {
-       config.headers['Authorization'] = `Bearer ${token}`;
+        config.headers['Authorization'] = `Bearer ${token}`;
       }
       return config;
-   },
-   error => {
-     Promise.reject(error);
-   }
+    },
+    error => {
+      Promise.reject(error);
+    }
   );
 
   // Add a response interceptor
@@ -129,52 +148,52 @@ export const authInterceptor = () => (dispatch, getState) => {
     error => {
       const originalRequest = error.config;
       const refreshToken = getState().auth.refreshToken;
-      if(refreshToken){
+      if (refreshToken) {
         // try to refresh the token failed
         if (error.response.status === 401 && originalRequest._retry) {
-              // router.push('/login');
-              return Promise.reject(error);
+          // router.push('/login');
+          return Promise.reject(error);
         }
         // token was not valid and 1st try to refresh the token
         if (error.response.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
           const refreshToken = getState().auth.refreshToken;
           // request to refresh the token, in request-body is the refreshToken
-          axios.post('https://api.opensensemap.org/users/refresh-auth', {"token": refreshToken})
-               .then(res => {
-                 if (res.status === 200) {
-                   clearTimeout(logoutTimerId);
-                   const logoutTimer = () => setTimeout(
-                     () => dispatch(logout()),
-                     timeToLogout
-                   );
-                   logoutTimerId = logoutTimer();
-                   dispatch({
-                     type: REFRESH_TOKEN_SUCCESS,
-                     payload: res.data
-                   });
-                   axios.defaults.headers.common['Authorization'] = 'Bearer ' + getState().auth.token;
-                   // request was successfull, new request with the old parameters and the refreshed token
-                   return axios(originalRequest)
-                          .then(res => {
-                             originalRequest.success(res);
-                           })
-                           .catch(err => {
-                             originalRequest.error(err);
-                           });
-                 }
-                 return Promise.reject(error);
-               })
-               .catch(err => {
-                 // request failed, token could not be refreshed
-                 if(err.response){
-                   dispatch(returnErrors(err.response.data.message, err.response.status));
-                 }
-                 dispatch({
-                   type: AUTH_ERROR
-                 });
-                 return Promise.reject(error);
-               });
+          axios.post('https://api.opensensemap.org/users/refresh-auth', { "token": refreshToken })
+            .then(res => {
+              if (res.status === 200) {
+                clearTimeout(logoutTimerId);
+                const logoutTimer = () => setTimeout(
+                  () => dispatch(logout()),
+                  timeToLogout
+                );
+                logoutTimerId = logoutTimer();
+                dispatch({
+                  type: REFRESH_TOKEN_SUCCESS,
+                  payload: res.data
+                });
+                axios.defaults.headers.common['Authorization'] = 'Bearer ' + getState().auth.token;
+                // request was successfull, new request with the old parameters and the refreshed token
+                return axios(originalRequest)
+                  .then(res => {
+                    originalRequest.success(res);
+                  })
+                  .catch(err => {
+                    originalRequest.error(err);
+                  });
+              }
+              return Promise.reject(error);
+            })
+            .catch(err => {
+              // request failed, token could not be refreshed
+              if (err.response) {
+                dispatch(returnErrors(err.response.data.message, err.response.status));
+              }
+              dispatch({
+                type: AUTH_ERROR
+              });
+              return Promise.reject(error);
+            });
         }
       }
       // request status was unequal to 401, no possibility to refresh the token
