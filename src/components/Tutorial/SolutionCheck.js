@@ -16,8 +16,10 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 
-import { faPlay } from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Tour from 'reactour'
+import * as tours from '../Tour';
 
 const styles = (theme) => ({
   compile: {
@@ -34,7 +36,8 @@ class SolutionCheck extends Component {
 
   state = {
     open: false,
-    msg: ''
+    msg: '',
+    isTourOpen: false
   }
 
   toggleDialog = () => {
@@ -54,20 +57,42 @@ class SolutionCheck extends Component {
     this.setState({ msg, open: true });
   }
 
+  openTour = () => {
+    this.setState({ isTourOpen: true });
+
+  }
+
+  closeTour = () => {
+    this.setState({ isTourOpen: false });
+  }
+
   render() {
     const steps = tutorials.filter(tutorial => tutorial.id === this.props.currentTutorialId)[0].steps;
     return (
       <div>
-        <Tooltip title='Lösung kontrollieren' arrow>
+        <Tooltip title='Hilfe' arrow>
           <IconButton
             className={this.props.classes.compile}
+            style={{ width: '40px', height: '40px', marginRight: '5px' }}
+            onClick={() => this.openTour()}
+          >
+            <FontAwesomeIcon icon={faInfoCircle} size="xs" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title='Lösung kontrollieren' arrow>
+          <IconButton
+            className={`solutionCheck ${this.props.classes.compile}`}
             style={{ width: '40px', height: '40px', marginRight: '5px' }}
             onClick={() => this.check()}
           >
             <FontAwesomeIcon icon={faPlay} size="xs" />
           </IconButton>
         </Tooltip>
-
+        <Tour
+          steps={tours.tours[0].assessment}
+          isOpen={this.state.isTourOpen}
+          onRequestClose={() => { this.closeTour(); }}
+        />
         <Dialog
           style={{ zIndex: 9999999 }}
           fullWidth

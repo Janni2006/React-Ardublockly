@@ -18,9 +18,9 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Tooltip from '@material-ui/core/Tooltip';
 import Tour from 'reactour'
-import * as steps from './Tour';
+import * as tours from './Tour';
 
-import { faBars, faChevronLeft, faCog, faChalkboardTeacher, faTools, faLightbulb } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faChevronLeft, faCog, faChalkboardTeacher, faTools, faQuestionCircle, faLightbulb } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const styles = (theme) => ({
@@ -94,19 +94,19 @@ class Navbar extends Component {
                   Tutorial
                 </Typography>
               </Link> : null}
-
-            <Tooltip title='Hilfe starten' arrow>
-              <IconButton
-                color="inherit"
-                className={`openTour ${this.props.classes.button}`}
-                onClick={() => { this.openTour(); }}
-                style={{ margin: '0 30px 0 auto' }}
-              >
-                <FontAwesomeIcon icon={faQuestionCircle} size="s" />
-              </IconButton>
-            </Tooltip>
+            {/^\/(\/.*$|$)/g.test(this.props.location.pathname) ?
+              <Tooltip title='Hilfe starten' arrow>
+                <IconButton
+                  color="inherit"
+                  className={`openTour ${this.props.classes.button}`}
+                  onClick={() => { this.openTour(); }}
+                  style={{ margin: '0 30px 0 auto' }}
+                >
+                  <FontAwesomeIcon icon={faQuestionCircle} size="s" />
+                </IconButton>
+              </Tooltip> : null}
             <Tour
-              steps={steps.steps}
+              steps={tours.tours[0].ui}
               isOpen={this.state.isTourOpen}
               onRequestClose={() => { this.closeTour(); }}
             />

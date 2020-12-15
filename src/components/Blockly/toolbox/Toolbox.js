@@ -10,11 +10,6 @@ import { En } from '../msg/en';
 
 class Toolbox extends React.Component {
 
-    constructor(props) {
-        super(props);
-
-    }
-
     componentDidUpdate() {
         this.props.workspace.registerToolboxCategoryCallback('CREATE_TYPED_VARIABLE', this.createFlyout);
 
@@ -33,8 +28,6 @@ class Toolbox extends React.Component {
             typedVarModal.setLocale(En);
         }
         typedVarModal.init();
-
-
     }
 
     createFlyout(workspace) {
