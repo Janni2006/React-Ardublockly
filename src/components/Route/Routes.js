@@ -34,7 +34,7 @@ class Routes extends Component {
 
   render() {
     return (
-      <div style={{ margin: '0 22px' }}>
+      <div style={{ margin: '0 22px', marginTop: this.props.tutorialIsLoading || this.props.projectIsLoading ? '50px' : '70px' }}>
         <Switch>
           <PublicRoute path="/" exact>
             <Home />
